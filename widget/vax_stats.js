@@ -15,6 +15,9 @@ const CFG = {
 class VaccinationWidget {
     async init() {
         this.widget = await this.createWidget();
+        if (!config.runsInWidget) {
+            await this.widget.presentSmall();
+        }
         Script.setWidget(this.widget);
         Script.complete();
     };
