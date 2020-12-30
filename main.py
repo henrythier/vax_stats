@@ -4,6 +4,8 @@ import requests
 import json
 from datetime import datetime
 import schedule
+import repo_writer
+import io
 
 # file paths
 git_hub_data_path = 'https://raw.githubusercontent.com/henrythier/vax_stats/main/data/{}'
@@ -65,12 +67,16 @@ def update_latest_record(new_data):
 
     # save to csv
     vaccinated.to_csv('./data/latest.csv')
+    s = io.StringIO()
+    vaccinated.to_csv(s)
+    vax_csv_string = s.getvalue()
+    repo_writer.update_file('data/latest.csv', 'updated latest csv', vax_csv_string)
 
     # save to json
     j = json.loads(vaccinated.to_json())
     j['Timestamp'] = datetime.now().isoformat()
-    with open("./data/latest.json", "w") as json_file:
-        json.dump(j, json_file, indent=4, sort_keys=True)
+    vax_json_string = str(j)
+    repo_writer.update_file('data/latest.json', 'updated latest json', vax_json_string)
 
 def update_data():
     new_data = get_data()
