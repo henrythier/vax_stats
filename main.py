@@ -75,7 +75,8 @@ def update_latest_record(new_data):
     # save to json
     j = json.loads(vaccinated.to_json())
     j['Timestamp'] = datetime.now().isoformat()
-    vax_json_string = str(j)
+    vax_json_string = json.dumps(j, indent=4)
+    print(vax_json_string)
     repo_writer.update_file('data/latest.json', 'updated latest json', vax_json_string)
 
 def update_data():
