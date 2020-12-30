@@ -10,17 +10,18 @@ const CFG = {
     openUrl: false,
     dataUrl: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest.json",
     scriptRefreshInterval: 5400
-}
+};
 
 class VaccinationWidget {
     async init() {
         this.widget = await this.createWidget();
         Script.setWidget(this.widget);
         Script.complete();
-    }
+    };
 
     async createWidget() {
         const list = new ListWidget();
+        list.backgroundColor = new Color('121212');
         list.setPadding(0,0,0,0);
 
         const data = await dataRequest.request(CFG.dataUrl);
@@ -44,18 +45,18 @@ class VaccinationWidget {
 
             contentStack.addSpacer();
         } else {
-            const errorRow = contentStack.addText("Could not load data.")
+            const errorRow = contentStack.addText("Could not load data.");
         }
 
         if (CFG.openUrl) list.url = CFG.openUrl;
         list.refreshAfterDate = new Date(Date.now() + (CFG.scriptRefreshInterval * 1000));
         return list;
-    }
+    };
 }
 
 class DataRequest {
     async request(url) {
-        let data = {}
+        let data = {};
         try {
             const resData = new Request(url);
             resData.timeoutInterval = 20;
@@ -64,102 +65,99 @@ class DataRequest {
             console.warn(e);
         }
         return data;
-    }
+    };
 }
 
 class ProgCircle {
+
     async getDiagram(percentage, absolute, timestamp, unit = "") {
         let textColor = new Color('EDEDED');
         let strokeColor = new Color('B0B0B0');
         let fillColor = new Color('04DAC6');
 
-        textColor = Color.dynamic(textColor, new Color('EDEDED'));
-        strokeColor = Color.dynamic(strokeColor, new Color('111111'));
-        fillColor = Color.dynamic(fillColor, new Color('04DAC6'));
-
         function drawArc(ctr, rad, w, deg) {
-            let bgx = ctr.x - rad
-            let bgy = ctr.y - rad
-            let bgd = 2 * rad
-            let bgr = new Rect(bgx, bgy, bgd, bgd)
+            let bgx = ctr.x - rad;
+            let bgy = ctr.y - rad;
+            let bgd = 2 * rad;
+            let bgr = new Rect(bgx, bgy, bgd, bgd);
 
-            canvas.setFillColor(fillColor)
-            canvas.setStrokeColor(strokeColor)
-            canvas.setLineWidth(w)
-            canvas.strokeEllipse(bgr)
+            canvas.setFillColor(fillColor);
+            canvas.setStrokeColor(strokeColor);
+            canvas.setLineWidth(w);
+            canvas.strokeEllipse(bgr);
 
             for (let t = 0; t < deg; t++) {
-                let rect_x = ctr.x + rad * sinDeg(t) - w / 2
-                let rect_y = ctr.y - rad * cosDeg(t) - w / 2
-                let rect_r = new Rect(rect_x, rect_y, w, w)
-                canvas.fillEllipse(rect_r)
+                let rect_x = ctr.x + rad * sinDeg(t) - w / 2;
+                let rect_y = ctr.y - rad * cosDeg(t) - w / 2;
+                let rect_r = new Rect(rect_x, rect_y, w, w);
+                canvas.fillEllipse(rect_r);
             }
-        }
+        };
 
         function sinDeg(deg) {
-            return Math.sin((deg * Math.PI) / 180)
-        }
+            return Math.sin((deg * Math.PI) / 180);
+        };
 
         function cosDeg(deg) {
-            return Math.cos((deg * Math.PI) / 180)
-        }
-        const canvas = new DrawContext()
-        const canvSize = 200
-        const canvTextSize = 40
-        const canvSmallTextSize = 16
-        const canvUpdTextSize = 12
+            return Math.cos((deg * Math.PI) / 180);
+        };
+        const canvas = new DrawContext();
+        const canvSize = 200;
+        const canvAbsTextSize = 40;
+        const canvRelTextSize = 16;
+        const canvUpdTextSize = 12;
 
-        const canvWidth = 15
-        const canvRadius = 85
+        const canvWidth = 15;
+        const canvRadius = 85;
 
-        canvas.opaque = false
-        canvas.size = new Size(canvSize, canvSize)
-        canvas.respectScreenScale = true
+        canvas.opaque = false;
+        canvas.size = new Size(canvSize, canvSize);
+        canvas.respectScreenScale = true;
 
         drawArc(
             new Point(canvSize / 2, canvSize / 2),
             canvRadius,
             canvWidth,
             Math.floor(percentage * 3.6)
-        )
+        );
 
         const canvTextRect = new Rect(
             0,
-            100 - canvTextSize / 1.5,
+            100 - canvAbsTextSize / 1.5,
             canvSize,
-            canvTextSize * 1.5
-        )
+            canvAbsTextSize * 1.5
+        );
 
-        canvas.setTextAlignedCenter()
-        canvas.setTextColor(textColor)
-        canvas.setFont(Font.boldSystemFont(canvTextSize))
-        canvas.drawTextInRect(`${absolute}${unit}`, canvTextRect)
+        canvas.setTextAlignedCenter();
+        canvas.setTextColor(textColor);
+        canvas.setFont(Font.boldSystemFont(canvAbsTextSize));
+        canvas.drawTextInRect(`${absolute}${unit}`, canvTextRect);
 
         const canvSmallTextRect = new Rect(
             0,
-            100 + canvTextSize / 2,
+            100 + canvAbsTextSize / 2,
             canvSize,
-            canvSmallTextSize * 1.5
-        )
+            canvRelTextSize * 1.5
+        );
 
-        canvas.setTextColor(textColor)
-        canvas.setFont(Font.mediumSystemFont(canvSmallTextSize))
-        canvas.drawTextInRect(`${percentage}% geimpft`, canvSmallTextRect)
+        canvas.setTextColor(textColor);
+        canvas.setFont(Font.mediumSystemFont(canvRelTextSize));
+        canvas.drawTextInRect(`${percentage}% geimpft`, canvSmallTextRect);
 
         const canvUpdTextRect = new Rect(
             0,
             canvSize - canvUpdTextSize,
             canvSize,
             canvUpdTextSize
-        )
+        );
 
         canvas.setTextAlignedRight();
         canvas.setTextColor(Color.gray());
-        canvas.setFont(Font.regularSystemFont(canvUpdTextSize))
-        canvas.drawTextInRect(`${timestamp}`, canvUpdTextRect)
+        canvas.setFont(Font.regularSystemFont(canvUpdTextSize));
+        canvas.drawTextInRect(`${timestamp}`, canvUpdTextRect);
 
-        return canvas.getImage()
-    }
+        return canvas.getImage();
+    };
 }
 
 const dataRequest = new DataRequest();
