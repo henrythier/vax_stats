@@ -37,7 +37,7 @@ def add_latest_records(new_data):
     '''
     Function to add the latest data to historic records
     '''
-    cleaned_data_path = './clean/vaccinated.csv'
+    cleaned_data_path = './data/all_time.csv'
     data = pd.read_csv(cleaned_data_path, index_col=0, parse_dates=[0])
     data = data.append(new_data)
     data.sort_index(inplace=True)
@@ -48,7 +48,7 @@ def update_latest_record(new_data):
     Function to update the file detailing the latest data (json and csv)
     '''
     # get inhabitants
-    inhabitants = pd.read_csv('./inhabitants/inhabitants.csv', index_col=[0])
+    inhabitants = pd.read_csv('./data/population.csv', index_col=[0])
     vaccinated = new_data.T
 
     # calculate absolute and relative figures per bundesland
@@ -57,12 +57,12 @@ def update_latest_record(new_data):
     vaccinated['vaccinated_rel'] = vaccinated['vaccinated_abs'] / vaccinated['inhabitants'] * 100
 
     # save to csv
-    vaccinated.to_csv('./clean/latest.csv')
+    vaccinated.to_csv('./data/latest.csv')
 
     # save to json
     j = json.loads(vaccinated.to_json())
     j['Timestamp'] = datetime.now().isoformat()
-    with open("./clean/latest.json", "w") as json_file:
+    with open("./data/latest.json", "w") as json_file:
         json.dump(j, json_file, indent=4, sort_keys=True)
 
 def update_data():
