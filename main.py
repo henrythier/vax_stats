@@ -5,12 +5,20 @@ import json
 from datetime import datetime
 import schedule
 
+# file paths
+git_hub_data_path = 'https://raw.githubusercontent.com/henrythier/vax_stats/main/data/{}'
+pop_data_path = git_hub_data_path.format('population.csv')
+vax_latest_json_path = git_hub_data_path.format('latest.json')
+vax_latest_csv_path = git_hub_data_path.format('latest.csv')
+vax_data_path = git_hub_data_path.format('all_time.csv')
+rki_data_path = 'https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquotenmonitoring.xlsx;?__blob=publicationFile'
+
 def get_data():
     '''
     Function to get the latest excel from RKI and return a dataframe
     '''
     # url of excel
-    url = 'https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquotenmonitoring.xlsx;jsessionid=682C4113515029008BB13CC85E346010.internet122?__blob=publicationFile'
+    url = rki_data_path
     column_name = 'Impfungen kumulativ'
 
     # get data
@@ -37,18 +45,17 @@ def add_latest_records(new_data):
     '''
     Function to add the latest data to historic records
     '''
-    cleaned_data_path = './data/all_time.csv'
-    data = pd.read_csv(cleaned_data_path, index_col=0, parse_dates=[0])
+    data = pd.read_csv(vax_data_path, index_col=0, parse_dates=[0])
     data = data.append(new_data)
     data.sort_index(inplace=True)
-    data.to_csv(cleaned_data_path)
+    data.to_csv(vax_data_path)
 
 def update_latest_record(new_data):
     '''
     Function to update the file detailing the latest data (json and csv)
     '''
     # get inhabitants
-    inhabitants = pd.read_csv('./data/population.csv', index_col=[0])
+    inhabitants = pd.read_csv(pop_data_path, index_col=[0])
     vaccinated = new_data.T
 
     # calculate absolute and relative figures per bundesland
