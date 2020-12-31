@@ -3,7 +3,7 @@ import requests
 import json
 import os;
 
-token =  os.getenv('token')
+token =  os.environ['token']
 repo_path = 'henrythier/vax_stats'
 
 # authenticate
