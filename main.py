@@ -6,6 +6,7 @@ from datetime import datetime
 import schedule
 import repo_writer
 import io
+import time
 
 # file paths
 git_hub_data_path = 'https://raw.githubusercontent.com/henrythier/vax_stats/main/data/{}'
