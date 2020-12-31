@@ -69,9 +69,9 @@ def update_latest_record(new_data):
     vaccinated['vaccinated_rel'] = vaccinated['vaccinated_abs'] / vaccinated['inhabitants'] * 100
 
     # save to csv
-    s = io.StringIO()
-    vaccinated.to_csv(s)
-    vax_csv_string = s.getvalue()
+    x = io.StringIO()
+    vaccinated.to_csv(x)
+    vax_csv_string = x.getvalue()
     repo_writer.update_file('data/latest.csv', 'updated latest csv', vax_csv_string)
 
     # save to json
