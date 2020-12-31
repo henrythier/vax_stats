@@ -93,4 +93,4 @@ def schedule_updates():
         time.sleep(1)
 
 if __name__ == "__main__":
-    update_data()
+    schedule_updates()
