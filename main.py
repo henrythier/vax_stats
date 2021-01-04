@@ -6,6 +6,7 @@ from datetime import datetime
 import schedule
 import repo_writer
 import io
+import time
 
 # file paths
 git_hub_data_path = 'https://raw.githubusercontent.com/henrythier/vax_stats/main/data/{}'
@@ -50,7 +51,10 @@ def add_latest_records(new_data):
     data = pd.read_csv(vax_data_path, index_col=0, parse_dates=[0])
     data = data.append(new_data)
     data.sort_index(inplace=True)
-    data.to_csv(vax_data_path)
+    s = io.StringIO()
+    data.to_csv(s)
+    data_csv_string = s.getvalue()
+    repo_writer.update_file('data/all_time.csv', 'updated data', data_csv_string)
 
 def update_latest_record(new_data):
     '''
@@ -66,17 +70,15 @@ def update_latest_record(new_data):
     vaccinated['vaccinated_rel'] = vaccinated['vaccinated_abs'] / vaccinated['inhabitants'] * 100
 
     # save to csv
-    vaccinated.to_csv('./data/latest.csv')
-    s = io.StringIO()
-    vaccinated.to_csv(s)
-    vax_csv_string = s.getvalue()
+    x = io.StringIO()
+    vaccinated.to_csv(x)
+    vax_csv_string = x.getvalue()
     repo_writer.update_file('data/latest.csv', 'updated latest csv', vax_csv_string)
 
     # save to json
     j = json.loads(vaccinated.to_json())
     j['Timestamp'] = datetime.now().isoformat()
     vax_json_string = json.dumps(j, indent=4)
-    print(vax_json_string)
     repo_writer.update_file('data/latest.json', 'updated latest json', vax_json_string)
 
 def update_data():
@@ -93,4 +95,4 @@ def schedule_updates():
         time.sleep(1)
 
 if __name__ == "__main__":
-    update_data()
+    schedule_updates()
