@@ -33,7 +33,7 @@ class VaccinationWidget {
             let vaccPercTotal = parseFloat(data.vaccinated_rel.Total).toFixed(2);
             let vaccAbsTotal = parseFloat(data.vaccinated_abs.Total);
             let timestamp = new Date(data.Timestamp);
-            let updatedStr = "" + timestamp.getHours() + ":" + timestamp.getMinutes();
+            let updatedStr = timestamp.getHours() + ':' + ('' + timestamp.getMinutes()).padStart(2, '0')
 
             const contentStack = list.addStack();
             contentStack.addSpacer();
