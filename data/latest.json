@@ -1,22 +1,22 @@
 {
     "vaccinated_abs": {
-        "Baden-W\u00fcrttemberg": 24063,
-        "Bayern": 57833,
-        "Berlin": 14616,
-        "Brandenburg": 3219,
-        "Bremen": 1837,
-        "Hamburg": 3704,
-        "Hessen": 30085,
+        "Baden-W\u00fcrttemberg": 27454,
+        "Bayern": 66258,
+        "Berlin": 17758,
+        "Brandenburg": 3309,
+        "Bremen": 1903,
+        "Hamburg": 4140,
+        "Hessen": 33405,
         "Mecklenburg-Vorpommern": 11494,
-        "Niedersachsen": 4962,
-        "Nordrhein-Westfalen": 48691,
+        "Niedersachsen": 5394,
+        "Nordrhein-Westfalen": 53841,
         "Rheinland-Pfalz": 7248,
         "Saarland": 4149,
-        "Sachsen": 4343,
-        "Sachsen-Anhalt": 12822,
-        "Schleswig-Holstein": 8933,
+        "Sachsen": 4866,
+        "Sachsen-Anhalt": 13366,
+        "Schleswig-Holstein": 9557,
         "Th\u00fcringen": 810,
-        "Total": 238809
+        "Total": 264952
     },
     "inhabitants": {
         "Baden-W\u00fcrttemberg": 11100394,
@@ -38,23 +38,23 @@
         "Total": 83166711
     },
     "vaccinated_rel": {
-        "Baden-W\u00fcrttemberg": 0.2167760892,
-        "Bayern": 0.4406412106,
-        "Berlin": 0.3983113734,
-        "Brandenburg": 0.1276422116,
-        "Bremen": 0.2696703768,
-        "Hamburg": 0.2005139523,
-        "Hessen": 0.4784449307,
+        "Baden-W\u00fcrttemberg": 0.2473245544,
+        "Bayern": 0.504832973,
+        "Berlin": 0.483936328,
+        "Brandenburg": 0.1312109594,
+        "Bremen": 0.2793591328,
+        "Hamburg": 0.2241165666,
+        "Hessen": 0.5312432412,
         "Mecklenburg-Vorpommern": 0.7147396554,
-        "Niedersachsen": 0.0620745976,
-        "Nordrhein-Westfalen": 0.2713010555,
+        "Niedersachsen": 0.0674789157,
+        "Nordrhein-Westfalen": 0.2999963058,
         "Rheinland-Pfalz": 0.1770437648,
         "Saarland": 0.420412874,
-        "Sachsen": 0.1066559659,
-        "Sachsen-Anhalt": 0.584203807,
-        "Schleswig-Holstein": 0.30763424,
+        "Sachsen": 0.1194998687,
+        "Sachsen-Anhalt": 0.6089898678,
+        "Schleswig-Holstein": 0.3291235231,
         "Th\u00fcringen": 0.037967955,
-        "Total": 0.2871449371
+        "Total": 0.3185793893
     },
-    "Timestamp": "2021-01-04T11:00:04.546934"
+    "Timestamp": "2021-01-04T12:00:04.787752"
 }
