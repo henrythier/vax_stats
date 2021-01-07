@@ -26,7 +26,10 @@ def get_data():
 
     # get data
     r = requests.get(url)
-    df = pd.read_excel(r.content, sheet_name=1, nrows=17, index_col=0)
+    df = pd.read_excel(r.content, sheet_name=1, nrows=17, index_col=1)
+
+    # drop bundesland identifier
+    df = df.drop(df.columns[0], axis=1)
 
     # clean bundesland names
     regex = r'[^\w-]'
