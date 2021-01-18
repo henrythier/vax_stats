@@ -26,7 +26,11 @@ def get_data():
 
     # get data
     r = requests.get(url)
+<<<<<<< HEAD
     df = pd.read_excel(r.content, sheet_name=1, nrows=17, index_col=1, skiprows=2)
+=======
+    df = pd.read_excel(r.content, sheet_name=1, nrows=17, index_col=1)
+>>>>>>> a70bb5a27d0a381f5382eba244e4c963f3b8ae9a
 
     # drop bundesland identifier
     df = df.drop(df.columns[0], axis=1)
