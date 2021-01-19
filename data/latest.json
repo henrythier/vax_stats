@@ -7,7 +7,7 @@
         "Bremen": 12866.0,
         "Hamburg": 26517.0,
         "Hessen": 74071.0,
-        "Mecklenburg-Vorpommern": 39002.0,
+        "Mecklenburg-Vorpommern": 39116.0,
         "Niedersachsen": 94116.0,
         "Nordrhein-Westfalen": 218699.0,
         "Rheinland-Pfalz": 91423.0,
@@ -16,7 +16,7 @@
         "Sachsen-Anhalt": 34411.0,
         "Schleswig-Holstein": 69126.0,
         "Th\u00fcringen": 25975.0,
-        "Total": 1195429.0
+        "Total": 1195543.0
     },
     "inhabitants": {
         "Baden-W\u00fcrttemberg": 11100394,
@@ -45,7 +45,7 @@
         "Bremen": 1.8887202328,
         "Hamburg": 1.4354828494,
         "Hessen": 1.1779589318,
-        "Mecklenburg-Vorpommern": 2.4252893719,
+        "Mecklenburg-Vorpommern": 2.4323783158,
         "Niedersachsen": 1.1773907352,
         "Nordrhein-Westfalen": 1.2185674874,
         "Rheinland-Pfalz": 2.2331501259,
@@ -54,7 +54,7 @@
         "Sachsen-Anhalt": 1.5678550307,
         "Schleswig-Holstein": 2.3805579844,
         "Th\u00fcringen": 1.2175526325,
-        "Total": 1.4373888129
+        "Total": 1.437525887
     },
-    "Timestamp": "2021-01-19T13:00:13.743327"
+    "Timestamp": "2021-01-19T14:00:05.850444"
 }
