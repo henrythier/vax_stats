@@ -57,9 +57,9 @@ def get_data():
     second.rename(columns={"Gesamt": "Total"}, inplace=True)
 
     vaccinations = [first, second]
-    return vaccinations[0]
+    return vaccinations
 
-def add_latest_records(new_data):
+def add_latest_records(new_data, data_path, rel_data_path):
     '''
     Function to add the latest data to historic records
     '''
@@ -69,7 +69,7 @@ def add_latest_records(new_data):
     s = io.StringIO()
     data.to_csv(s)
     data_csv_string = s.getvalue()
-    repo_writer.update_file('data/all_time.csv', 'updated data', data_csv_string)
+    repo_writer.update_file(rel_data_path, 'updated data', data_csv_string)
 
 def update_latest_record(new_data):
     '''
@@ -98,8 +98,9 @@ def update_latest_record(new_data):
 
 def update_data():
     new_data = get_data()
-    add_latest_records(new_data)
-    update_latest_record(new_data)
+    add_latest_records(new_data[0], vax_data_path, 'data/all_time.csv')
+    add_latest_records(new_data[0], vax_data_second_path, 'data/all_time_second.csv')
+    update_latest_record(new_data[0])
 
 def schedule_updates():
     print('running')
