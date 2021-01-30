@@ -71,7 +71,7 @@ def add_latest_records(new_data, data_path, rel_data_path):
     data_csv_string = s.getvalue()
     repo_writer.update_file(rel_data_path, 'updated data', data_csv_string)
 
-def update_latest_record(new_data):
+def update_latest_record(new_data, path):
     '''
     Function to update the file detailing the latest data (json and csv)
     '''
@@ -88,19 +88,19 @@ def update_latest_record(new_data):
     x = io.StringIO()
     vaccinated.to_csv(x)
     vax_csv_string = x.getvalue()
-    repo_writer.update_file('data/latest.csv', 'updated latest csv', vax_csv_string)
+    repo_writer.update_file('data/{}.csv'.format(path), 'updated {} csv'.format(path), vax_csv_string)
 
     # save to json
     j = json.loads(vaccinated.to_json())
     j['Timestamp'] = datetime.now().isoformat()
     vax_json_string = json.dumps(j, indent=4)
-    repo_writer.update_file('data/latest.json', 'updated latest json', vax_json_string)
+    repo_writer.update_file('data/{}.json'.format(path), 'updated {} json'.format(path), vax_json_string)
 
 def update_data():
     new_data = get_data()
     add_latest_records(new_data[0], vax_data_path, 'data/all_time.csv')
-    add_latest_records(new_data[0], vax_data_second_path, 'data/all_time_second.csv')
-    update_latest_record(new_data[0])
+    add_latest_records(new_data[1], vax_data_second_path, 'data/all_time_second.csv')
+    update_latest_record(new_data[0], 'latest')
 
 def schedule_updates():
     print('running')
