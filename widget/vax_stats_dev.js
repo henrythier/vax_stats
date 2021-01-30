@@ -8,9 +8,8 @@
 
 const CFG = {
     openUrl: false,
-    dataPath: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/",
-    fileFirst: "latest.json",
-    fileSecond: "latest_second.json",
+    dataUrl: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest.json",
+    dataUrlSecond: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest_second.json",
     scriptRefreshInterval: 5400
 };
 
@@ -29,8 +28,8 @@ class VaccinationWidget {
         list.backgroundColor = new Color('121212');
         list.setPadding(0,0,0,0);
 
-        const data = await dataRequest.request(CFG.dataUrl + CFG.fileFirst);
-        const dataSecond = await dataRequest.request(CFG.dataUrl + CFG.fileSecond);
+        const data = await dataRequest.request(CFG.dataUrl);
+        const dataSecond = await dataRequest.request(CFG.dataUrlSecond);
 
         if (data !== undefined && dataSecond !== undefined) {
             const contentStack = list.addStack();
@@ -61,12 +60,13 @@ class DataRequest {
         try {
             const resData = new Request(url);
             resData.timeoutInterval = 20;
-            dataJSON = await resData.loadJSON();
+            let dataJSON = await resData.loadJSON();
 
             if (dataJSON !== undefined) {
-                data.vaccTotalPerc = parseFloat(data.vaccinated_rel.Total).toFixed(2);
-                data.vaccTotal = parseFloat(data.vaccinated_abs.Total);
-                let timestamp = new Date(data.Timestamp);
+                data.vaccTotalPerc = parseFloat(dataJSON.vaccinated_rel.Total).toFixed(2);
+                console.log(data.vaccTotalPerc);
+                data.vaccTotal = parseFloat(dataJSON.vaccinated_abs.Total);
+                let timestamp = new Date(dataJSON.Timestamp);
                 data.updated = timestamp.getHours() + ':' + ('' + timestamp.getMinutes()).padStart(2, '0')
             }
 
@@ -115,7 +115,7 @@ class ProgCircle {
         const canvas = new DrawContext();
         const canvSize = 200;
         const canvAbsTextSize = 40;
-        const canvRelTextSize = 16;
+        const canvRelTextSize = 14;
         const canvUpdTextSize = 12;
 
         const canvWidth = 15;
@@ -129,7 +129,7 @@ class ProgCircle {
             new Point(canvSize / 2, canvSize / 2),
             canvRadius,
             canvWidth,
-            Math.floor(percentageSecond * 3.6),
+            Math.floor(percentageFirst * 3.6),
             strokeColor,
             fillColor
         );
@@ -138,7 +138,7 @@ class ProgCircle {
             new Point(canvSize / 2, canvSize / 2),
             canvRadius,
             canvWidth,
-            Math.floor(percentageFirst * 3.6),
+            Math.floor(percentageSecond * 3.6),
             strokeTransparent,
             fillColorSecondary
         );
@@ -164,7 +164,7 @@ class ProgCircle {
 
         canvas.setTextColor(textColor);
         canvas.setFont(Font.mediumSystemFont(canvRelTextSize));
-        canvas.drawTextInRect(`${percentageFirst}% geimpft`, canvSmallTextRect);
+        canvas.drawTextInRect(`${percentageFirst}% | ${percentageSecond}%`, canvSmallTextRect);
 
         const canvUpdTextRect = new Rect(
             0,
