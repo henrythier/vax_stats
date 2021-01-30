@@ -1,22 +1,22 @@
 {
     "vaccinated_abs": {
-        "Baden-W\u00fcrttemberg": 217101,
-        "Bayern": 313523,
-        "Berlin": 91948,
-        "Brandenburg": 73844,
-        "Bremen": 18525,
-        "Hamburg": 44721,
-        "Hessen": 123833,
-        "Mecklenburg-Vorpommern": 56274,
-        "Niedersachsen": 147097,
-        "Nordrhein-Westfalen": 333232,
-        "Rheinland-Pfalz": 139931,
-        "Saarland": 21029,
-        "Sachsen": 84339,
-        "Sachsen-Anhalt": 49587,
-        "Schleswig-Holstein": 89431,
-        "Th\u00fcringen": 51042,
-        "Total": 1855457
+        "Baden-W\u00fcrttemberg": 217101.0,
+        "Bayern": 313523.0,
+        "Berlin": 91948.0,
+        "Brandenburg": 73844.0,
+        "Bremen": 18525.0,
+        "Hamburg": 44721.0,
+        "Hessen": 123833.0,
+        "Mecklenburg-Vorpommern": 56274.0,
+        "Niedersachsen": 147097.0,
+        "Nordrhein-Westfalen": 333232.0,
+        "Rheinland-Pfalz": 139931.0,
+        "Saarland": 21029.0,
+        "Sachsen": 84339.0,
+        "Sachsen-Anhalt": 49587.0,
+        "Schleswig-Holstein": 89431.0,
+        "Th\u00fcringen": 51042.0,
+        "Total": 1855457.0
     },
     "inhabitants": {
         "Baden-W\u00fcrttemberg": 11100394,
@@ -56,5 +56,5 @@
         "Th\u00fcringen": 2.3925436561,
         "Total": 2.2310092316
     },
-    "Timestamp": "2021-01-30T13:00:03.899132"
+    "Timestamp": "2021-01-30T15:00:08.713225"
 }
