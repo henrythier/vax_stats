@@ -8,7 +8,9 @@
 
 const CFG = {
     openUrl: false,
-    dataUrl: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest.json",
+    dataPath: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/",
+    fileFirst: "latest.json",
+    fileSecond: "latest_second.json",
     scriptRefreshInterval: 5400
 };
 
@@ -27,23 +29,19 @@ class VaccinationWidget {
         list.backgroundColor = new Color('121212');
         list.setPadding(0,0,0,0);
 
-        const data = await dataRequest.request(CFG.dataUrl);
+        const data = await dataRequest.request(CFG.dataUrl + CFG.fileFirst);
+        const dataSecond = await dataRequest.request(CFG.dataUrl + CFG.fileSecond);
 
-        if (data !== undefined) {
-            let vaccPercTotal = parseFloat(data.vaccinated_rel.Total).toFixed(2);
-            let vaccAbsTotal = parseFloat(data.vaccinated_abs.Total);
-            let timestamp = new Date(data.Timestamp);
-            let updatedStr = timestamp.getHours() + ':' + ('' + timestamp.getMinutes()).padStart(2, '0')
-
+        if (data !== undefined && dataSecond !== undefined) {
             const contentStack = list.addStack();
             contentStack.addSpacer();
 
-            if (vaccAbsTotal > 1000000) {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, (vaccAbsTotal / 1000000).toPrecision(3), updatedStr, "M"));
-            } else if (vaccAbsTotal > 1000) {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, (vaccAbsTotal / 1000).toPrecision(3), updatedStr, "k"));
+            if (data.vaccTotal > 1000000) {
+                contentStack.addImage(await progCircle.getDiagram(data.vaccTotalPerc, dataSecond.vaccTotalPerc, (data.vaccTotal / 1000000).toPrecision(3), data.updated, "M"));
+            } else if (data.vaccTotal > 1000) {
+                contentStack.addImage(await progCircle.getDiagram(data.vaccTotalPerc, dataSecond.vaccTotalPerc, (data.vaccTotal / 1000).toPrecision(3), data.updated, "k"));
             } else {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, vaccAbsTotal.toPrecision(3)), updatedStr);
+                contentStack.addImage(await progCircle.getDiagram(data.vaccTotalPerc, dataSecond.vaccTotalPerc, data.vaccTotal.toPrecision(3)), data.updated);
             }
 
             contentStack.addSpacer();
@@ -63,7 +61,15 @@ class DataRequest {
         try {
             const resData = new Request(url);
             resData.timeoutInterval = 20;
-            data = await resData.loadJSON();
+            dataJSON = await resData.loadJSON();
+
+            if (dataJSON !== undefined) {
+                data.vaccTotalPerc = parseFloat(data.vaccinated_rel.Total).toFixed(2);
+                data.vaccTotal = parseFloat(data.vaccinated_abs.Total);
+                let timestamp = new Date(data.Timestamp);
+                data.updated = timestamp.getHours() + ':' + ('' + timestamp.getMinutes()).padStart(2, '0')
+            }
+
         } catch (e) {
             console.warn(e);
         }
@@ -73,19 +79,21 @@ class DataRequest {
 
 class ProgCircle {
 
-    async getDiagram(percentage, absolute, timestamp, unit = "") {
+    async getDiagram(percentageFirst, percentageSecond, absolute, timestamp, unit = "") {
         let textColor = new Color('EDEDED');
         let strokeColor = new Color('B0B0B0');
-        let fillColor = new Color('04DAC6');
+        let strokeTransparent = new Color('B0B0B0', 0);
+        let fillColor = new Color('60D4DE');
+        let fillColorSecondary = new Color('D13DCA');
 
-        function drawArc(ctr, rad, w, deg) {
+        function drawArc(ctr, rad, w, deg, sCol = strokeColor, fCol = fillColor) {
             let bgx = ctr.x - rad;
             let bgy = ctr.y - rad;
             let bgd = 2 * rad;
             let bgr = new Rect(bgx, bgy, bgd, bgd);
 
-            canvas.setFillColor(fillColor);
-            canvas.setStrokeColor(strokeColor);
+            canvas.setFillColor(fCol);
+            canvas.setStrokeColor(sCol);
             canvas.setLineWidth(w);
             canvas.strokeEllipse(bgr);
 
@@ -121,7 +129,18 @@ class ProgCircle {
             new Point(canvSize / 2, canvSize / 2),
             canvRadius,
             canvWidth,
-            Math.floor(percentage * 3.6)
+            Math.floor(percentageSecond * 3.6),
+            strokeColor,
+            fillColor
+        );
+
+        drawArc(
+            new Point(canvSize / 2, canvSize / 2),
+            canvRadius,
+            canvWidth,
+            Math.floor(percentageFirst * 3.6),
+            strokeTransparent,
+            fillColorSecondary
         );
 
         const canvTextRect = new Rect(
@@ -145,7 +164,7 @@ class ProgCircle {
 
         canvas.setTextColor(textColor);
         canvas.setFont(Font.mediumSystemFont(canvRelTextSize));
-        canvas.drawTextInRect(`${percentage}% geimpft`, canvSmallTextRect);
+        canvas.drawTextInRect(`${percentageFirst}% geimpft`, canvSmallTextRect);
 
         const canvUpdTextRect = new Rect(
             0,
