@@ -36,7 +36,7 @@ def get_data():
     df.dropna(axis=1, inplace=True)
 
     # add second vaccination
-    df[second_col] = df.iloc[:,0] - df.iloc[:,1]
+    df[second_col] = df.iloc[:, 0] - df.iloc[:, 1]
 
     # clean bundesland names
     regex = r'[^\w-]'
@@ -52,7 +52,7 @@ def get_data():
 
     # convert to dataframe
     first = pd.DataFrame(first).T
-    second =pd.DataFrame(second).T
+    second = pd.DataFrame(second).T
 
     # rename columns
     first.rename(columns={"Gesamt": "Total"}, inplace=True)
@@ -61,17 +61,19 @@ def get_data():
     vaccinations = [first, second]
     return vaccinations
 
+
 def add_latest_records(new_data, data_path, rel_data_path):
     '''
     Function to add the latest data to historic records
     '''
-    data = pd.read_csv(vax_data_path, index_col=0, parse_dates=[0])
+    data = pd.read_csv(data_path, index_col=0, parse_dates=[0])
     data = data.append(new_data)
     data.sort_index(inplace=True)
     s = io.StringIO()
     data.to_csv(s)
     data_csv_string = s.getvalue()
     repo_writer.update_file(rel_data_path, 'updated data', data_csv_string)
+
 
 def update_latest_record(new_data, path):
     '''
@@ -83,7 +85,7 @@ def update_latest_record(new_data, path):
 
     # calculate absolute and relative figures per bundesland
     vaccinated.columns = ['vaccinated_abs']
-    vaccinated['inhabitants'] = inhabitants.T.iloc[:,0]
+    vaccinated['inhabitants'] = inhabitants.T.iloc[:, 0]
     vaccinated['vaccinated_rel'] = vaccinated['vaccinated_abs'] / vaccinated['inhabitants'] * 100
 
     # save to csv
@@ -98,11 +100,14 @@ def update_latest_record(new_data, path):
     vax_json_string = json.dumps(j, indent=4)
     repo_writer.update_file('data/{}.json'.format(path), 'updated {} json'.format(path), vax_json_string)
 
+
 def update_data():
     new_data = get_data()
     add_latest_records(new_data[0], vax_data_path, 'data/all_time.csv')
     add_latest_records(new_data[1], vax_data_second_path, 'data/all_time_second.csv')
     update_latest_record(new_data[0], 'latest')
+    update_latest_record(new_data[1], 'latest_second')
+
 
 def schedule_updates():
     print('running')
@@ -111,6 +116,7 @@ def schedule_updates():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
 
 if __name__ == "__main__":
     schedule_updates()
