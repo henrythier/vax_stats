@@ -17,13 +17,15 @@ vax_data_path = git_hub_data_path.format('all_time.csv')
 vax_data_second_path = git_hub_data_path.format('all_time_second.csv')
 rki_data_path = 'https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquotenmonitoring.xlsx;?__blob=publicationFile'
 
+
 def get_data():
     '''
     Function to get the latest excel from RKI and return a pandas dataframe
     '''
     # url of excel
     url = rki_data_path
-    column_name = 'Gesamt'
+    first_col = 'Gesamt'
+    second_col = 'total_second'
 
     # get data
     r = requests.get(url)
