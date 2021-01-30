@@ -14,6 +14,7 @@ pop_data_path = git_hub_data_path.format('population.csv')
 vax_latest_json_path = git_hub_data_path.format('latest.json')
 vax_latest_csv_path = git_hub_data_path.format('latest.csv')
 vax_data_path = git_hub_data_path.format('all_time.csv')
+vax_data_second_path = git_hub_data_path.format('all_time_second.csv')
 rki_data_path = 'https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquotenmonitoring.xlsx;?__blob=publicationFile'
 
 def get_data():
@@ -30,22 +31,33 @@ def get_data():
 
     # drop bundesland identifier
     df = df.drop(df.columns[0], axis=1)
+    df.dropna(axis=1, inplace=True)
+
+    # add second vaccination
+    df[second_col] = df.iloc[:,0] - df.iloc[:,1]
 
     # clean bundesland names
     regex = r'[^\w-]'
     df.index = [re.sub(regex, '', x) for x in df.index.values]
 
     # transpose
-    df = df.T.loc[column_name]
+    first = df.T.loc[first_col]
+    second = df.T.loc[second_col]
 
-    # insere timestamp
-    df.name = datetime.now().replace(second=0, microsecond=0)
-    df = pd.DataFrame(df).T
+    # insert timestamp
+    first.name = datetime.now().replace(second=0, microsecond=0)
+    second.name = datetime.now().replace(second=0, microsecond=0)
 
-    # columns
-    df.rename(columns={"Gesamt": "Total"}, inplace=True)
+    # convert to dataframe
+    first = pd.DataFrame(first).T
+    second =pd.DataFrame(second).T
 
-    return df
+    # rename columns
+    first.rename(columns={"Gesamt": "Total"}, inplace=True)
+    second.rename(columns={"Gesamt": "Total"}, inplace=True)
+
+    vaccinations = [first, second]
+    return vaccinations[0]
 
 def add_latest_records(new_data):
     '''
