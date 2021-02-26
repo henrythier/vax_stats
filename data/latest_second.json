@@ -9,14 +9,14 @@
         "Hessen": 123457.0,
         "Mecklenburg-Vorpommern": 47679.0,
         "Niedersachsen": 160413.0,
-        "Nordrhein-Westfalen": 348473.0,
+        "Nordrhein-Westfalen": 363431.0,
         "Rheinland-Pfalz": 136619.0,
         "Saarland": 22407.0,
         "Sachsen": 87935.0,
         "Sachsen-Anhalt": 51316.0,
         "Schleswig-Holstein": 86697.0,
         "Th\u00fcringen": 55582.0,
-        "Total": 1956085.0
+        "Total": 1971043.0
     },
     "inhabitants": {
         "Baden-W\u00fcrttemberg": 11100394,
@@ -47,14 +47,14 @@
         "Hessen": 1.9633497029,
         "Mecklenburg-Vorpommern": 2.9648574936,
         "Niedersachsen": 2.006765906,
-        "Nordrhein-Westfalen": 1.9416543653,
+        "Nordrhein-Westfalen": 2.0249987449,
         "Rheinland-Pfalz": 3.3371332931,
         "Saarland": 2.2704727086,
         "Sachsen": 2.159519309,
         "Sachsen-Anhalt": 2.3380909812,
         "Schleswig-Holstein": 2.9856672681,
         "Th\u00fcringen": 2.6053517004,
-        "Total": 2.3520047582
+        "Total": 2.3699903198
     },
-    "Timestamp": "2021-02-26T09:00:05.338873"
+    "Timestamp": "2021-02-26T10:00:12.086384"
 }
