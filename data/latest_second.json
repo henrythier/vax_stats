@@ -16,7 +16,8 @@
         "Sachsen-Anhalt": 56595,
         "Schleswig-Holstein": 93419,
         "Th\u00fcringen": 64282,
-        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": 998
+        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": 998,
+        "Total": 2271784
     },
     "inhabitants": {
         "Baden-W\u00fcrttemberg": 11100394.0,
@@ -35,7 +36,8 @@
         "Sachsen-Anhalt": 2194782.0,
         "Schleswig-Holstein": 2903773.0,
         "Th\u00fcringen": 2133378.0,
-        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": null
+        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": null,
+        "Total": 83166711.0
     },
     "vaccinated_rel": {
         "Baden-W\u00fcrttemberg": 2.6316543359,
@@ -54,7 +56,8 @@
         "Sachsen-Anhalt": 2.5786160083,
         "Schleswig-Holstein": 3.2171591925,
         "Th\u00fcringen": 3.0131556621,
-        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": null
+        "BundEinsatzkr\u00e4fteBundeswehrBundespolizei": null,
+        "Total": 2.7316025519
     },
-    "Timestamp": "2021-03-04T10:00:07.742163"
+    "Timestamp": "2021-03-04T11:00:06.163558"
 }
