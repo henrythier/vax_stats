@@ -31,12 +31,12 @@ def get_data():
     r = requests.get(url)
     df = pd.read_excel(r.content, sheet_name=1, nrows=18, index_col=1, skiprows=2)
 
-    # drop bundesland identifier
+
     df = df.drop(df.columns[0], axis=1)
     df.dropna(axis=1, inplace=True)
 
-    # add second vaccination
-    df[second_col] = df.iloc[:, 0] - df.iloc[:, 1]
+    df = df[['Gesamt', 'Gesamt.1']]
+    df.columns = [first_col, second_col]
 
     # clean bundesland names
     regex = r'[^\w-]'
