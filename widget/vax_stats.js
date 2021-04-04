@@ -7,160 +7,205 @@
 // Configuration Inspiration: https://github.com/rphl/corona-widget
 
 const CFG = {
-    openUrl: false,
-    dataUrl: "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest.json",
-    scriptRefreshInterval: 5400
+  openUrl: false,
+  dataUrl:
+    "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest.json",
+  dataUrlSecond:
+    "https://raw.githubusercontent.com/henrythier/vax_stats/main/data/latest_second.json",
+  scriptRefreshInterval: 5400,
+};
+
+const ENV = {
+  color: {
+    background: new Color("181818"),
+    text: new Color("e8e8e8"),
+    stroke: new Color("282828"),
+    strokeT: new Color("282828", 0),
+    fill: new Color("00ADEF"),
+    fillS: new Color("E5BB00"),
+  },
+  font: {
+    large: 40,
+    medium: 14,
+    small: 12,
+  },
 };
 
 class VaccinationWidget {
-    async init() {
-        this.widget = await this.createWidget();
-        if (!config.runsInWidget) {
-            await this.widget.presentSmall();
-        }
-        Script.setWidget(this.widget);
-        Script.complete();
-    };
+  async init() {
+    this.widget = await this.createWidget();
+    if (!config.runsInWidget) {
+      await this.widget.presentSmall();
+    }
+    Script.setWidget(this.widget);
+    Script.complete();
+  }
 
-    async createWidget() {
-        const list = new ListWidget();
-        list.backgroundColor = new Color('121212');
-        list.setPadding(0,0,0,0);
+  async createWidget() {
+    const list = new ListWidget();
 
-        const data = await dataRequest.request(CFG.dataUrl);
+    list.backgroundColor = ENV.color.background;
+    list.setPadding(0, 0, 0, 0);
 
-        if (data !== undefined) {
-            let vaccPercTotal = parseFloat(data.vaccinated_rel.Total).toFixed(2);
-            let vaccAbsTotal = parseFloat(data.vaccinated_abs.Total);
-            let timestamp = new Date(data.Timestamp);
-            let updatedStr = timestamp.getHours() + ':' + ('' + timestamp.getMinutes()).padStart(2, '0')
+    let data = [];
+    data[0] = await dataRequest.request(CFG.dataUrl);
+    data[1] = await dataRequest.request(CFG.dataUrlSecond);
 
-            const contentStack = list.addStack();
-            contentStack.addSpacer();
+    if (data[0] !== undefined && data[1] !== undefined) {
+      const contentStack = list.addStack();
+      contentStack.addSpacer();
 
-            if (vaccAbsTotal > 1000000) {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, (vaccAbsTotal / 1000000).toPrecision(3), updatedStr, "M"));
-            } else if (vaccAbsTotal > 1000) {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, (vaccAbsTotal / 1000).toPrecision(3), updatedStr, "k"));
-            } else {
-                contentStack.addImage(await progCircle.getDiagram(vaccPercTotal, vaccAbsTotal.toPrecision(3)), updatedStr);
-            }
+      contentStack.addImage(
+        await progCircle.getDiagram(
+          data[0].vaccTotalPerc,
+          data[1].vaccTotalPerc,
+          (data[0].vaccTotal / 1000000).toPrecision(3),
+          data[0].updated,
+          "M"
+        )
+      );
 
-            contentStack.addSpacer();
-        } else {
-            const errorRow = contentStack.addText("Could not load data.");
-        }
+      contentStack.addSpacer();
+    } else {
+      const errorRow = contentStack.addText("Could not load data.");
+    }
 
-        if (CFG.openUrl) list.url = CFG.openUrl;
-        list.refreshAfterDate = new Date(Date.now() + (CFG.scriptRefreshInterval * 1000));
-        return list;
-    };
+    if (CFG.openUrl) list.url = CFG.openUrl;
+    list.refreshAfterDate = new Date(
+      Date.now() + CFG.scriptRefreshInterval * 1000
+    );
+    return list;
+  }
 }
 
 class DataRequest {
-    async request(url) {
-        let data = {};
-        try {
-            const resData = new Request(url);
-            resData.timeoutInterval = 20;
-            data = await resData.loadJSON();
-        } catch (e) {
-            console.warn(e);
-        }
-        return data;
-    };
+  async request(url) {
+    let data = {};
+    try {
+      const resData = new Request(url);
+      resData.timeoutInterval = 20;
+      let dataJSON = await resData.loadJSON();
+
+      if (dataJSON !== undefined) {
+        data.vaccTotalPerc = parseFloat(dataJSON.vaccinated_rel.Total).toFixed(
+          2
+        );
+        data.vaccTotal = parseFloat(dataJSON.vaccinated_abs.Total);
+        let timestamp = new Date(dataJSON.Timestamp);
+        data.updated =
+          timestamp.getHours() +
+          ":" +
+          ("" + timestamp.getMinutes()).padStart(2, "0");
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    return data;
+  }
 }
 
 class ProgCircle {
+  async getDiagram(
+    percentageFirst,
+    percentageSecond,
+    absolute,
+    timestamp,
+    unit
+  ) {
+    function drawArc(ctr, rad, w, deg, sCol, fCol) {
+      let bgx = ctr.x - rad;
+      let bgy = ctr.y - rad;
+      let bgd = 2 * rad;
+      let bgr = new Rect(bgx, bgy, bgd, bgd);
 
-    async getDiagram(percentage, absolute, timestamp, unit = "") {
-        let textColor = new Color('EDEDED');
-        let strokeColor = new Color('B0B0B0');
-        let fillColor = new Color('04DAC6');
+      canvas.setFillColor(fCol);
+      canvas.setStrokeColor(sCol);
+      canvas.setLineWidth(w);
+      canvas.strokeEllipse(bgr);
 
-        function drawArc(ctr, rad, w, deg) {
-            let bgx = ctr.x - rad;
-            let bgy = ctr.y - rad;
-            let bgd = 2 * rad;
-            let bgr = new Rect(bgx, bgy, bgd, bgd);
+      for (let t = 0; t < deg; t++) {
+        let rect_x = ctr.x + rad * sinDeg(t) - w / 2;
+        let rect_y = ctr.y - rad * cosDeg(t) - w / 2;
+        let rect_r = new Rect(rect_x, rect_y, w, w);
+        canvas.fillEllipse(rect_r);
+      }
+    }
 
-            canvas.setFillColor(fillColor);
-            canvas.setStrokeColor(strokeColor);
-            canvas.setLineWidth(w);
-            canvas.strokeEllipse(bgr);
+    function sinDeg(deg) {
+      return Math.sin((deg * Math.PI) / 180);
+    }
 
-            for (let t = 0; t < deg; t++) {
-                let rect_x = ctr.x + rad * sinDeg(t) - w / 2;
-                let rect_y = ctr.y - rad * cosDeg(t) - w / 2;
-                let rect_r = new Rect(rect_x, rect_y, w, w);
-                canvas.fillEllipse(rect_r);
-            }
-        };
+    function cosDeg(deg) {
+      return Math.cos((deg * Math.PI) / 180);
+    }
 
-        function sinDeg(deg) {
-            return Math.sin((deg * Math.PI) / 180);
-        };
+    const canvas = new DrawContext();
+    const canvasSize = 200;
+    const canvasWidth = 15;
+    const canvasRadius = 85;
 
-        function cosDeg(deg) {
-            return Math.cos((deg * Math.PI) / 180);
-        };
-        const canvas = new DrawContext();
-        const canvSize = 200;
-        const canvAbsTextSize = 40;
-        const canvRelTextSize = 16;
-        const canvUpdTextSize = 12;
+    canvas.opaque = false;
+    canvas.size = new Size(canvasSize, canvasSize);
+    canvas.respectScreenScale = true;
 
-        const canvWidth = 15;
-        const canvRadius = 85;
+    drawArc(
+      new Point(canvasSize / 2, canvasSize / 2),
+      canvasRadius,
+      canvasWidth,
+      Math.floor(percentageFirst * 3.6),
+      ENV.color.stroke,
+      ENV.color.fill
+    );
 
-        canvas.opaque = false;
-        canvas.size = new Size(canvSize, canvSize);
-        canvas.respectScreenScale = true;
+    drawArc(
+      new Point(canvasSize / 2, canvasSize / 2),
+      canvasRadius,
+      canvasWidth,
+      Math.floor(percentageSecond * 3.6),
+      ENV.color.strokeT,
+      ENV.color.fillS
+    );
 
-        drawArc(
-            new Point(canvSize / 2, canvSize / 2),
-            canvRadius,
-            canvWidth,
-            Math.floor(percentage * 3.6)
-        );
+    const canvasAbs = new Rect(
+      0,
+      100 - ENV.font.large / 1.5,
+      canvasSize,
+      ENV.font.large * 1.5
+    );
 
-        const canvTextRect = new Rect(
-            0,
-            100 - canvAbsTextSize / 1.5,
-            canvSize,
-            canvAbsTextSize * 1.5
-        );
+    canvas.setTextAlignedCenter();
+    canvas.setTextColor(ENV.color.text);
+    canvas.setFont(Font.boldSystemFont(ENV.font.large));
+    canvas.drawTextInRect(`${absolute}${unit}`, canvasAbs);
 
-        canvas.setTextAlignedCenter();
-        canvas.setTextColor(textColor);
-        canvas.setFont(Font.boldSystemFont(canvAbsTextSize));
-        canvas.drawTextInRect(`${absolute}${unit}`, canvTextRect);
+    const canvasDetail = new Rect(
+      0,
+      100 + ENV.font.large / 2,
+      canvasSize,
+      ENV.font.medium * 1.5
+    );
 
-        const canvSmallTextRect = new Rect(
-            0,
-            100 + canvAbsTextSize / 2,
-            canvSize,
-            canvRelTextSize * 1.5
-        );
+    canvas.setTextColor(ENV.color.text);
+    canvas.setFont(Font.mediumSystemFont(ENV.font.medium));
+    canvas.drawTextInRect(
+      `${percentageFirst}% | ${percentageSecond}%`,
+      canvasDetail
+    );
 
-        canvas.setTextColor(textColor);
-        canvas.setFont(Font.mediumSystemFont(canvRelTextSize));
-        canvas.drawTextInRect(`${percentage}% geimpft`, canvSmallTextRect);
+    const canvasTimestamp = new Rect(
+      0,
+      canvasSize - ENV.font.small,
+      canvasSize,
+      ENV.font.small
+    );
 
-        const canvUpdTextRect = new Rect(
-            0,
-            canvSize - canvUpdTextSize,
-            canvSize,
-            canvUpdTextSize
-        );
+    canvas.setTextAlignedRight();
+    canvas.setTextColor(Color.gray());
+    canvas.setFont(Font.regularSystemFont(ENV.font.small));
+    canvas.drawTextInRect(`${timestamp}`, canvasTimestamp);
 
-        canvas.setTextAlignedRight();
-        canvas.setTextColor(Color.gray());
-        canvas.setFont(Font.regularSystemFont(canvUpdTextSize));
-        canvas.drawTextInRect(`${timestamp}`, canvUpdTextRect);
-
-        return canvas.getImage();
-    };
+    return canvas.getImage();
+  }
 }
 
 const dataRequest = new DataRequest();
