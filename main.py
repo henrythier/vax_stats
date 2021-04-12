@@ -109,7 +109,7 @@ def update_data():
 
 def schedule_updates():
     print('running')
-    schedule.every().hour.at(":42").do(update_data)
+    schedule.every().hour.at(":00").do(update_data)
 
     while True:
         schedule.run_pending()
