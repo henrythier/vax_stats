@@ -95,7 +95,7 @@ def update_latest_record(new_data, new_abs, path):
 
     # save to json
     j = json.loads(vaccinated.to_json())
-    j['vaccinated_abs']['Total'] = new_abs
+    j.upddate({'vaccinated_abs': {'Total': new_abs}})
     j['Timestamp'] = datetime.now().isoformat()
     vax_json_string = json.dumps(j, indent=4)
     repo_writer.update_file('data/{}.json'.format(path), 'updated {} json'.format(path), vax_json_string)
@@ -109,7 +109,7 @@ def update_data():
 
 def schedule_updates():
     print('running')
-    schedule.every().hour.at(":30").do(update_data)
+    schedule.every().hour.at(":40").do(update_data)
 
     while True:
         schedule.run_pending()
