@@ -29,16 +29,10 @@ def get_data():
 
     # get data
     r = requests.get(url)
-    df = pd.read_excel(r.content, sheet_name=1, nrows=18, index_col=1, skiprows=2)
-
-
-    df = df.drop(df.columns[0], axis=1)
-    df.dropna(axis=1, inplace=True)
-
+    df = pd.read_excel(r.content, sheet_name=1, nrows=18, index_col=1, skiprows=3, dec=',')
     df = df[['Gesamt', 'Gesamt.1']]
     df.columns = [first_col, second_col]
 
-    # clean bundesland names
     regex = r'[^\w-]'
     df.index = [re.sub(regex, '', x) for x in df.index.values]
 
@@ -57,13 +51,14 @@ def get_data():
     # rename columns
     first.rename(columns={"Gesamt": "Total"}, inplace=True)
     second.rename(columns={"Gesamt": "Total"}, inplace=True)
-
+    
     vaccinations = [first, second]
     return vaccinations
 
 
 def add_latest_records(new_data, data_path, rel_data_path):
     '''
+    NO LONGER USED AFTER RKI CHANGE DATA FORMAT 09/04/2021
     Function to add the latest data to historic records
     '''
     data = pd.read_csv(data_path, index_col=0, parse_dates=[0])
@@ -77,16 +72,14 @@ def add_latest_records(new_data, data_path, rel_data_path):
 
 def update_latest_record(new_data, path):
     '''
+    NO LONGER SUPPORTS ABSOLUTE FIGURES
     Function to update the file detailing the latest data (json and csv)
     '''
-    # get inhabitants
-    inhabitants = pd.read_csv(pop_data_path, index_col=[0])
+    # transpose so länder
     vaccinated = new_data.T
 
-    # calculate absolute and relative figures per bundesland
+    # rename column
     vaccinated.columns = ['vaccinated_abs']
-    vaccinated['inhabitants'] = inhabitants.T.iloc[:, 0]
-    vaccinated['vaccinated_rel'] = vaccinated['vaccinated_abs'] / vaccinated['inhabitants'] * 100
 
     # save to csv
     x = io.StringIO()
@@ -103,8 +96,6 @@ def update_latest_record(new_data, path):
 
 def update_data():
     new_data = get_data()
-    add_latest_records(new_data[0], vax_data_path, 'data/all_time.csv')
-    add_latest_records(new_data[1], vax_data_second_path, 'data/all_time_second.csv')
     update_latest_record(new_data[0], 'latest')
     update_latest_record(new_data[1], 'latest_second')
 
