@@ -1,5 +1,5 @@
 {
-    "vaccinated_abs": {
+    "vaccinated_rel": {
         "Baden-W\u00fcrttemberg": 5.9572660214,
         "Bayern": 6.5078027849,
         "Berlin": 7.2361807128,
@@ -19,5 +19,8 @@
         "ImpfzentrenBund": "-",
         "Total": 6.054339458
     },
-    "Timestamp": "2021-04-12T18:05:04.572534"
+    "vaccinated_abs": {
+        "Total": 5035195.0
+    },
+    "Timestamp": "2021-04-12T18:42:03.207176"
 }
