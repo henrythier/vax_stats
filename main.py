@@ -29,7 +29,7 @@ def get_data():
 
     # get data
     r = requests.get(url)
-    df = pd.read_excel(r.content, sheet_name=1, nrows=18, index_col=1, skiprows=3, dec=',')
+    df = pd.read_excel(r.content, sheet_name=1, nrows=18, index_col=1, skiprows=3)
     df = df[['Gesamt', 'Gesamt.1']]
     df.columns = [first_col, second_col]
 
