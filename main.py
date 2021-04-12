@@ -52,7 +52,13 @@ def get_data():
     first.rename(columns={"Gesamt": "Total"}, inplace=True)
     second.rename(columns={"Gesamt": "Total"}, inplace=True)
     
-    vaccinations = [first, second]
+    # absolute numbers
+    absolute = pd.read_excel(r.content, sheet_name='Impfungen_proTag', index_col=0)
+    absolute = absolute.loc['Gesamt']
+    first_abs = absolute['Erstimpfung']
+    second_abs = absolute['Zweitimpfung']
+    
+    vaccinations = [first, second, first_abs, second_abs]
     return vaccinations
 
 
@@ -70,16 +76,16 @@ def add_latest_records(new_data, data_path, rel_data_path):
     repo_writer.update_file(rel_data_path, 'updated data', data_csv_string)
 
 
-def update_latest_record(new_data, path):
+def update_latest_record(new_data, new_abs, path):
     '''
-    NO LONGER SUPPORTS ABSOLUTE FIGURES
+    CSV NO LONGER SUPPORTS ABSOLUTE FIGURES
     Function to update the file detailing the latest data (json and csv)
     '''
     # transpose so länder
     vaccinated = new_data.T
 
     # rename column
-    vaccinated.columns = ['vaccinated_abs']
+    vaccinated.columns = ['vaccinated_rel']
 
     # save to csv
     x = io.StringIO()
@@ -89,6 +95,7 @@ def update_latest_record(new_data, path):
 
     # save to json
     j = json.loads(vaccinated.to_json())
+    j['vaccinated_abs']['Total'] = new_abs
     j['Timestamp'] = datetime.now().isoformat()
     vax_json_string = json.dumps(j, indent=4)
     repo_writer.update_file('data/{}.json'.format(path), 'updated {} json'.format(path), vax_json_string)
@@ -96,8 +103,8 @@ def update_latest_record(new_data, path):
 
 def update_data():
     new_data = get_data()
-    update_latest_record(new_data[0], 'latest')
-    update_latest_record(new_data[1], 'latest_second')
+    update_latest_record(new_data[0], new_data[2], 'latest')
+    update_latest_record(new_data[1], new_data[3], 'latest_second')
 
 
 def schedule_updates():
