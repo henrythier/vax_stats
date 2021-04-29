@@ -55,7 +55,7 @@ def get_data():
     # absolute numbers
     absolute = pd.read_excel(r.content, sheet_name='Impfungen_proTag', index_col=0)
     absolute = absolute.loc['Gesamt']
-    first_abs = absolute['Einmal geimpft']
+    first_abs = absolute['Begonnene Impfserie']
     second_abs = absolute['Vollständig geimpft']
     
     vaccinations = [first, second, first_abs, second_abs]
