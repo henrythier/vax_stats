@@ -1,26 +1,26 @@
 {
     "vaccinated_rel": {
-        "Baden-W\u00fcrttemberg": 7.366882653,
-        "Bayern": 7.1834353709,
-        "Berlin": 9.2681246527,
-        "Brandenburg": 7.1765534858,
-        "Bremen": 8.8586058174,
-        "Hamburg": 6.7325374488,
-        "Hessen": 7.6775104642,
-        "Mecklenburg-Vorpommern": 6.8374107197,
-        "Niedersachsen": 6.8383263227,
-        "Nordrhein-Westfalen": 7.4082834329,
-        "Rheinland-Pfalz": 8.0935967462,
-        "Saarland": 8.5771724625,
-        "Sachsen": 9.7603838534,
-        "Sachsen-Anhalt": 7.1205249542,
-        "Schleswig-Holstein": 8.2354922372,
-        "Th\u00fcringen": 10.9996446949,
+        "Baden-W\u00fcrttemberg": 7.6918711174,
+        "Bayern": 7.4783212799,
+        "Berlin": 9.6990836059,
+        "Brandenburg": 7.4191490281,
+        "Bremen": 9.5620682265,
+        "Hamburg": 7.1444463752,
+        "Hessen": 7.8282400987,
+        "Mecklenburg-Vorpommern": 6.9766400645,
+        "Niedersachsen": 7.1101435047,
+        "Nordrhein-Westfalen": 7.652243208,
+        "Rheinland-Pfalz": 8.6470783504,
+        "Saarland": 8.834648749,
+        "Sachsen": 10.3022344707,
+        "Sachsen-Anhalt": 7.545532996,
+        "Schleswig-Holstein": 8.876864686,
+        "Th\u00fcringen": 11.5930228961,
         "ImpfzentrenBund": "-",
-        "Total": 7.6730183547
+        "Total": 8.0030410244
     },
     "vaccinated_abs": {
-        "Total": 6381397.0
+        "Total": 6655866.0
     },
-    "Timestamp": "2021-05-03T09:00:03.293707"
+    "Timestamp": "2021-05-03T10:00:03.576555"
 }
